@@ -40,7 +40,7 @@ int fila_ehCheia(fila *F) {
 	return (F->tamanho == F->ult);
 }
 
-/* Insere um elemento na fila */
+/* Insere um elemento na fila (resolução está em uma foto no celular)*/
 void fila_insere(fila *F, void *info) {
 	return;
 }
