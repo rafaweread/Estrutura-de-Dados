@@ -1,107 +1,85 @@
-# fila-Estrutura-de-Dados-
-
-/* *****************************
-	Compilar usando:
-	gcc -c buffer.c
-***************************** */
 #include <stdio.h>
-#include <stdlib.h>
 #include "buffer.h"
 
 /* Cria uma buffer vazia */
-buffer *buffer_cria(int tamMax) {
-    if(tamMax > 0){
-        buffer *aux     = (buffer *) malloc( sizeof(buffer) );
-        aux->tamMax     = tamMax;
-        aux->tamanho    = 0;
-        aux->pri        = 0;
-        aux->ult        = 0;
-        aux->itens      = (void **) malloc( tamMax * sizeof(void *) );
-        return aux;
-    }else{
-        return NULL;
-    }
+buffer *buffer_cria(int tamMaximo) {
+	buffer *aux;
+	
+	if (tamMaximo <= 0)
+		return NULL;
+		
+	aux = (buffer *) malloc(sizeof(buffer));
+	if (aux != NULL) {
+		aux->pri = aux->tamanho = 0;
+		aux->ult = -1;
+		aux->tamMax = tamMaximo;
+		aux->itens = (void *) malloc(sizeof(void *)*tamMaximo);
+	}
+	return aux;
 }
 
 /* Libera memória removendo a buffer e seus elementos */
-void buffer_elimina(buffer **B){
-    if( B != NULL ){
-        free((*B)->itens);
-        free(*B);
-        B = NULL;
-    }
+void buffer_elimina(buffer **B) {
+	if (B != NULL && *B != NULL) {
+		free((*B)->itens);
+		free(*B);
+		*B = NULL;
+	}
+	return;
 }
 
 /* Retorna se a buffer eh vazia ou nao */
 int buffer_ehVazia(buffer *B) {
-	if( B != NULL ){
-        return B->tamanho == 0;
-    }else{
-        return 1;
-    }
+	if (B != NULL) {
+		return (B->tamanho == 0);
+	}
+	
+	return 0;
 }
 
-/* Retorna se a buffer eh cheia ou nao */
+/* Retorna se a buffer eh cheia ou nao - apenas por compatibilidade */
 int buffer_ehCheia(buffer *B) {
-    if( B != NULL ){
-        return B->tamanho == B->tamMax;
-    }else{
-        return 1;
-    }
+	if (B != NULL) {
+		return (B->tamanho == B->tamMax);
+	}
+	
+	return 0;
 }
 
 /* Insere um elemento no topo da buffer */
 void buffer_insere(buffer *B, void *info) {
-    if( B != NULL ){
-        if(B->tamanho != B->tamMax){
-            B->tamanho += 1;
-            B->ult += 1;
-            if(B->ult == B->tamMax){
-                B->ult = 0;
-            }
-            *(B->itens + B->ult) = info;
-        }
-    }
+	if (B != NULL && !buffer_ehCheia(B)) {
+		B->itens[(B->ult + 1) % B->tamMax] = info;
+		B->ult = (B->ult + 1) % B->tamMax;
+		B->tamanho = B->tamanho + 1;
+	}
+	return;
 }
 
 /* Remove o elemento do topo da buffer */
 void *buffer_remove(buffer *B) {
-    if( B != NULL ){
-        if(B->tamanho > 0){
-            void *aux = *(B->itens + B->pri);
-            B->tamanho -= 1;
-            B->pri += 1;
-            if(B->pri == B->tamMax){
-                B->pri = 0;
-            }
-            return aux;
-        }    
+	void *info = NULL;
+	
+	if (B != NULL && !buffer_ehVazia(B)) {
+		info = B->itens[B->pri];
+		B->pri = (B->pri + 1) % B->tamMax;
+		B->tamanho = B->tamanho - 1;
     }
+	return info;
 }
 
 /* Retorna o primeiro elemento da buffer */
 void *buffer_primeiro(buffer *B) {
-	if( B != NULL ){
-        return *(B->itens + B->pri);
-    }else{
-        return NULL;
-    }
+	return NULL;
 }
 
 /* Retorna o ultimo elemento da buffer */
 void *buffer_ultimo(buffer *B) {
-	if( B != NULL ){
-        return *(B->itens + B->ult);
-    }else{
-        return NULL;
-    }
+	return NULL;
 }
 
 /* Retorna o tamanho da buffer */
 int buffer_tamanho(buffer *B) {
-	if( B != NULL ){
-        return B->tamanho;
-    }else{
-        return 0;
-    }
+	return 0;
 }
+
