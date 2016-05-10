@@ -75,11 +75,15 @@ void *buffer_primeiro(buffer *B) {
 
 /* Retorna o ultimo elemento da buffer */
 void *buffer_ultimo(buffer *B) {
+	void *info = null;
+	if(B!=null && !buffer_ehVazia(B))
+		info = B ->itens(B->ult);
 	return NULL;
 }
 
 /* Retorna o tamanho da buffer */
 int buffer_tamanho(buffer *B) {
+	if(B!=null && !)
 	return 0;
 }
 
